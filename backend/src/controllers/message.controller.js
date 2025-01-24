@@ -68,3 +68,72 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+
+export const editMessage = async (req, res) => {
+  try {
+    const { id: messageId } = req.params;
+    const { text } = req.body;
+    const userId = req.user._id;
+
+    // Find the message by ID
+    const message = await Message.findById(messageId);
+
+    // Validate that the message exists and the sender is the current user
+    if (!message) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "You are not allowed to edit this message" });
+    }
+
+    // Update the message text
+    message.text = text;
+    message.editedAt = new Date();
+    await message.save();
+
+    // Notify the receiver about the edited message (real-time update)
+    const receiverSocketId = getReceiverSocketId(message.receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("messageEdited", message);
+    }
+
+    res.status(200).json(message);
+  } catch (error) {
+    console.error("Error in editMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { id: messageId } = req.params;
+    const userId = req.user._id;
+
+    // Find the message by ID
+    const message = await Message.findById(messageId);
+
+    // Validate that the message exists and the sender is the current user
+    if (!message) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "You are not allowed to delete this message" });
+    }
+
+    // Delete the message
+    await Message.findByIdAndDelete(messageId);
+
+    // Notify the receiver about the deleted message (real-time update)
+    const receiverSocketId = getReceiverSocketId(message.receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("messageDeleted", { messageId });
+    }
+
+    res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteMessage controller: ", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

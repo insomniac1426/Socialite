@@ -17,7 +17,7 @@ const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
 app.use(express.json());// this helps to extract the json data from req.body
-app.use(cookieParser());// it will aloow to parese the cookies that is we can take the value out from jwt
+app.use(cookieParser());// it will aloow to parse the cookies that is we can take the value out from jwt
 app.use(
   cors({
     origin: "http://localhost:5173",

@@ -42,6 +42,44 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
+// Edit Message
+editMessage: async (messageId, updatedText) => {
+  const { messages } = get();
+  try {
+    // Send the edit request to the server
+    const res = await axiosInstance.patch(`/messages/${messageId}/edit`, { text: updatedText });
+
+    // Update the message in the store
+    set({
+      messages: messages.map((message) =>
+        message._id === messageId ? { ...message, text: updatedText, editedAt: res.data.editedAt } : message
+      ),
+    });
+
+    toast.success("Message edited successfully");
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+},
+
+// Delete Message
+deleteMessage: async (messageId) => {
+  const { messages } = get();
+  try {
+    // Send the delete request to the server
+    await axiosInstance.delete(`/messages/${messageId}`);
+
+    // Remove the message from the store
+    set({
+      messages: messages.filter((message) => message._id !== messageId),
+    });
+
+    toast.success("Message deleted successfully");
+  } catch (error) {
+    toast.error(error.response.data.message);
+  }
+},
+
 
   subscribeToMessages: () => {
     const { selectedUser } = get();
@@ -65,4 +103,17 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
+
+  addReaction: (messageId, reaction) => {
+    set((state) => ({
+      messages: state.messages.map((message) =>
+        message._id === messageId
+          ? {
+              ...message,
+              reactions: [...(message.reactions || []), reaction].slice(0, 5), 
+            }
+          : message
+      ),
+    }));
+  },
 }));
