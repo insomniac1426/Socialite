@@ -35,6 +35,7 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "frontend/vite-project/dist", "index.html"));
   });
 }
+console.log("Static files served from:", path.join(__dirname, "frontend/vite-project/dist"));
 
 
 server.listen(PORT, () => {
