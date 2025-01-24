@@ -17,7 +17,7 @@ const NoChatSelected = () => {
         </div>
 
         {/* Welcome Text */}
-        <h2 className="text-2xl font-bold">Welcome to Chatify!</h2>
+        <h2 className="text-2xl font-bold">Welcome to Socialite!</h2>
         <p className="text-base-content/60">
           Send and receive messages without keeping your phone online
         </p>
