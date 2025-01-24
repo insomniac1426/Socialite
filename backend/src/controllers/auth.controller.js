@@ -2,7 +2,7 @@ import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import cloudinary from "../lib/cloudinary.js";
-
+// this is auth controller
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
   try {
