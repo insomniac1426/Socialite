@@ -29,12 +29,20 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "frontend/vite-project/dist")));
+  const staticPath = path.join(__dirname, "frontend/vite-project/dist");
+  console.log("Serving static files from:", staticPath);
+  app.use(express.static(staticPath));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "frontend/vite-project/dist", "index.html"));
+    res.sendFile(path.join(staticPath, "index.html"), (err) => {
+      if (err) {
+        console.error("Error serving index.html:", err);
+        res.status(500).send("Server error");
+      }
+    });
   });
 }
+
 console.log("Static files served from:", path.join(__dirname, "frontend/vite-project/dist"));
 
 
