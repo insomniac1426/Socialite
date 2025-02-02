@@ -29,7 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 
 if (process.env.NODE_ENV === "production") {
-  const staticPath = path.join(__dirname, "frontend/vite-project/dist");
+  const staticPath = path.join(__dirname, "../frontend/vite-project/dist");
   console.log("Serving static files from:", staticPath);
   app.use(express.static(staticPath));
 
@@ -44,7 +44,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 console.log("Static files served from:", path.join(__dirname, "frontend/vite-project/dist"));
-
 
 server.listen(PORT, () => {
   console.log("server is running on PORT:" + PORT);

@@ -1,4 +1,4 @@
-//backend
+// backend
 1. setup the login and authentication for the chat app by making the desired signin login and logout controllers
 2. now make the messages controllers
 3. in the messages controllers there will be several routes related to user ids related to specific user chats
